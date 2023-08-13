@@ -86,7 +86,7 @@ const Register = () => {
           } else {
             const data = {
               ...res.data.user,
-              accessToken: res.data.accessToken,
+              accessToken: res.data.access_token,
             };
             ability.update(res.data.user.ability);
             dispatch(handleLogin(data));

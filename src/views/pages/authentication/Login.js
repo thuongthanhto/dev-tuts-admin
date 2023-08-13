@@ -97,8 +97,8 @@ const Login = () => {
         .then((res) => {
           const data = {
             ...res.data.userData,
-            accessToken: res.data.accessToken,
-            refreshToken: res.data.refreshToken,
+            accessToken: res.data.access_token,
+            refreshToken: res.data.refresh_token,
           };
           debugger;
           dispatch(handleLogin(data));
