@@ -1,8 +1,8 @@
-const apiUrl = import.meta.env.REACT_APP_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL;
 
 // ** Auth Endpoints
 export default {
-  loginEndpoint: '/jwt/login',
+  loginEndpoint: `${apiUrl}/auth/signin`,
   registerEndpoint: `${apiUrl}/auth/signup`,
   refreshEndpoint: '/jwt/refresh-token',
   logoutEndpoint: '/jwt/logout',

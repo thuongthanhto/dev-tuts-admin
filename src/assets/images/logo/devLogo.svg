@@ -1,0 +1,25 @@
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="421" height="239" color-interpolation-filters="sRGB">
+    <g>
+        <g>
+            <g fill-opacity="1">
+                <g>
+                    <rect data-gra="graph-name-bg" stroke-width="2" class="i-icon-bg" x="0" y="0" width="421"
+                        height="239" rx="10" ry="10"></rect>
+                </g>
+                <g transform="translate(55,40)">
+                    <g data-gra="path-name" fill-rule="" class="tp-name" fill="#ffffff" fill-opacity="1"
+                        transform="matrix(1,0,0,1,-4.454460131915475,0)">
+                        <g transform="scale(3)">
+                            <g>
+                                <path
+                                    d="M3.25 0L25.87 0 33.93-8.06 33.93-43.42 25.87-51.48 3.25-51.48ZM13-41.73L21.39-41.73 24.18-38.94 24.18-12.54 21.39-9.75 13-9.75ZM71.11 0L71.11-9.75 50.18-9.75 50.18-20.87 59.93-20.87 59.93-30.62 50.18-30.62 50.18-41.73 71.11-41.73 71.11-51.48 40.43-51.48 40.43 0ZM109.2-51.48L99.19-51.48 93.41-24.96 87.56-51.48 77.61-51.48 88.86 0 97.95 0Z"
+                                    transform="translate(-3.25, 51.47999954223633)"></path>
+                            </g>
+
+                        </g>
+                    </g>ß
+                </g>ßß
+            </g>
+        </g>
+    </g>
+</svg>
