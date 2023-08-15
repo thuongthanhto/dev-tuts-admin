@@ -6,7 +6,7 @@ import logo from '@src/assets/images/logo/devLogo.svg';
 //Template config options
 const themeConfig = {
   app: {
-    appName: 'Admin Website',
+    appName: 'Dev Tuts',
     appLogoImage: logo,
   },
   layout: {

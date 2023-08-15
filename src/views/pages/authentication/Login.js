@@ -96,19 +96,18 @@ const Login = () => {
         .login({ email: data.loginEmail, password: data.password })
         .then((res) => {
           const data = {
-            ...res.data.userData,
+            ...res.data.user_data,
             accessToken: res.data.access_token,
             refreshToken: res.data.refresh_token,
           };
-          debugger;
           dispatch(handleLogin(data));
-          ability.update(res.data.userData.ability);
+          ability.update(res.data.user_data.ability);
           navigate(getHomeRouteForLoggedInUser(data.role));
           toast((t) => (
             <ToastContent
               t={t}
               role={data.role || 'admin'}
-              name={data.fullName || data.username || 'John Doe'}
+              name={data.fullName || `${data.first_name} ${data.last_name}` || 'John Doe'}
             />
           ));
         })
