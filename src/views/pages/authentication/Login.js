@@ -1,6 +1,9 @@
 // ** React Imports
 import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import GoogleLogin from 'react-google-login';
+import { FaGooglePlusG } from 'react-icons/fa';
+import axios from 'axios';
 
 // ** Custom Hooks
 import { useSkin } from '@hooks/useSkin';
@@ -45,6 +48,7 @@ import illustrationsDark from '@src/assets/images/pages/login-v2-dark.svg';
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
+import jwtDefaultConfig from '../../../@core/auth/jwt/jwtDefaultConfig';
 
 const ToastContent = ({ t, name, role }) => {
   return (
@@ -76,7 +80,6 @@ const defaultValues = {
 };
 
 const Login = () => {
-  // ** Hooks
   const { skin } = useSkin();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -90,33 +93,46 @@ const Login = () => {
 
   const source = skin === 'dark' ? illustrationsDark : illustrationsLight;
 
-  const onSubmit = (data) => {
+  const handleSuccess = (data) => {
+    debugger;
+    const payload = {
+      ...data.user,
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      ability: data.user.role.ability,
+      role: data.user.role.name,
+    };
+    dispatch(handleLogin(payload));
+    ability.update(payload.ability);
+    navigate(getHomeRouteForLoggedInUser(payload.role));
+    toast((t) => (
+      <ToastContent
+        t={t}
+        role={payload.role || 'admin'}
+        name={
+          data.fullName ||
+          `${payload.first_name} ${payload.last_name}` ||
+          'Thuong To'
+        }
+      />
+    ));
+  };
+
+  const onSubmit = async (data) => {
     if (Object.values(data).every((field) => field.length > 0)) {
-      useJwt
-        .login({ email: data.loginEmail, password: data.password })
-        .then((res) => {
-          const data = {
-            ...res.data.user_data,
-            accessToken: res.data.access_token,
-            refreshToken: res.data.refresh_token,
-          };
-          dispatch(handleLogin(data));
-          ability.update(res.data.user_data.ability);
-          navigate(getHomeRouteForLoggedInUser(data.role));
-          toast((t) => (
-            <ToastContent
-              t={t}
-              role={data.role || 'admin'}
-              name={data.fullName || `${data.first_name} ${data.last_name}` || 'John Doe'}
-            />
-          ));
-        })
-        .catch((err) =>
-          setError('loginEmail', {
-            type: 'manual',
-            message: err.response.data.error,
-          })
-        );
+      try {
+        const res = await useJwt.login({
+          email: data.loginEmail,
+          password: data.password,
+        });
+
+        if (res.status === 200) {
+          handleSuccess(res.data);
+        }
+      } catch (error) {
+        debugger;
+        toast.error(error?.response?.data?.message ?? error.code);
+      }
     } else {
       for (const key in data) {
         if (data[key].length === 0) {
@@ -125,6 +141,24 @@ const Login = () => {
           });
         }
       }
+    }
+  };
+
+  const responseGoogle = async (response) => {
+    try {
+      const { status, data } = await axios.post(
+        `${jwtDefaultConfig.authEndpoint}/google`,
+        {
+          idToken: response.tokenId,
+        }
+      );
+
+      if (status === 200) {
+        handleSuccess(data);
+      }
+    } catch (error) {
+      debugger;
+      toast.error(error?.response?.data?.message ?? error.code);
     }
   };
 
@@ -235,9 +269,23 @@ const Login = () => {
               <Button color="twitter">
                 <Twitter size={14} />
               </Button>
-              <Button color="google">
-                <Mail size={14} />
-              </Button>
+              <GoogleLogin
+                clientId="749116841216-khs7k2ko4ntvvsptjimhbsj5aejjo9if.apps.googleusercontent.com"
+                render={(renderProps) => (
+                  <Button
+                    color="google"
+                    onClick={renderProps.onClick}
+                    disabled={renderProps.disabled}
+                  >
+                    <FaGooglePlusG size={14} />
+                  </Button>
+                )}
+                buttonText="Login"
+                onSuccess={responseGoogle}
+                onFailure={responseGoogle}
+                cookiePolicy={'single_host_origin'}
+              />
+
               <Button className="me-0" color="github">
                 <GitHub size={14} />
               </Button>

@@ -15,15 +15,17 @@ export default class JwtService {
     this.jwtConfig = { ...this.jwtConfig, ...jwtOverrideConfig };
 
     // ** Request Interceptor
-    axios.interceptors.request.use(
+    this.requestInterceptor = axios.interceptors.request.use(
       (config) => {
         // ** Get token from localStorage
         const accessToken = this.getToken();
-
+        console.log('accessToken', accessToken);
         // ** If token is present add it to request's Authorization Header
         if (accessToken) {
           // ** eslint-disable-next-line no-param-reassign
-          config.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`;
+          config.headers.Authorization = `${
+            this.jwtConfig.tokenType
+          } ${accessToken.replace(/['"]+/g, '')}`;
         }
         return config;
       },
@@ -57,7 +59,9 @@ export default class JwtService {
               // ** Make sure to assign accessToken according to your response.
               // ** Check: https://pixinvent.ticksy.com/ticket/2413870
               // ** Change Authorization header
-              originalRequest.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`;
+              originalRequest.headers.Authorization = `${
+                this.jwtConfig.tokenType
+              } ${accessToken.replace(/['"]+/g, '')}`;
               resolve(this.axios(originalRequest));
             });
           });
@@ -95,17 +99,25 @@ export default class JwtService {
   }
 
   login(...args) {
-    console.log('this.jwtConfig.loginEndpoint', this.jwtConfig.loginEndpoint);
-    return axios.post(this.jwtConfig.loginEndpoint, ...args);
+    return axios.post(`${this.jwtConfig.authEndpoint}/signin`, ...args);
   }
 
   register(...args) {
-    return axios.post(this.jwtConfig.registerEndpoint, ...args);
+    return axios.post(`${this.jwtConfig.authEndpoint}/signup`, ...args);
   }
 
   refreshToken() {
-    return axios.post(this.jwtConfig.refreshEndpoint, {
-      refreshToken: this.getRefreshToken(),
+    axios.interceptors.request.eject(this.requestInterceptor);
+    return axios.get(`${this.jwtConfig.authEndpoint}/refresh-token`, {
+      headers: {
+        Authorization: `${
+          this.jwtConfig.tokenType
+        } ${this.getRefreshToken().replace(/['"]+/g, '')}`,
+      },
     });
+  }
+
+  logout() {
+    return axios.get(`${this.jwtConfig.authEndpoint}/logout`);
   }
 }
