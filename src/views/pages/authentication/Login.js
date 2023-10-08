@@ -94,7 +94,6 @@ const Login = () => {
   const source = skin === 'dark' ? illustrationsDark : illustrationsLight;
 
   const handleSuccess = (data) => {
-    debugger;
     const payload = {
       ...data.user,
       accessToken: data.access_token,
@@ -130,7 +129,7 @@ const Login = () => {
           handleSuccess(res.data);
         }
       } catch (error) {
-        debugger;
+        console.log(error);
         toast.error(error?.response?.data?.message ?? error.code);
       }
     } else {
@@ -157,7 +156,7 @@ const Login = () => {
         handleSuccess(data);
       }
     } catch (error) {
-      debugger;
+      console.log(error);
       toast.error(error?.response?.data?.message ?? error.code);
     }
   };
