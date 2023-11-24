@@ -2,6 +2,7 @@
 import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { FaGooglePlusG } from 'react-icons/fa';
 import axios from 'axios';
 
@@ -144,6 +145,10 @@ const Login = () => {
   };
 
   const responseGoogle = async (response) => {
+    if (!response.tokenId) {
+      return;
+    }
+
     try {
       const { status, data } = await axios.post(
         `${jwtDefaultConfig.authEndpoint}/google`,
@@ -160,6 +165,29 @@ const Login = () => {
       toast.error(error?.response?.data?.message ?? error.code);
     }
   };
+
+  const responseFacebook = async (response) => {
+    console.log(response);
+    if (!response.accessToken) {
+      return;
+    }
+
+    try {
+      const { status, data } = await axios.post(
+        `${jwtDefaultConfig.authEndpoint}/facebook`,
+        {
+          accessToken: response.accessToken,
+        }
+      );
+
+      if (status === 200) {
+        handleSuccess(data);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message ?? error.code);
+    }
+  }
 
   return (
     <div className="auth-wrapper auth-cover">
@@ -262,14 +290,24 @@ const Login = () => {
               <div className="divider-text">or</div>
             </div>
             <div className="auth-footer-btn d-flex justify-content-center">
-              <Button color="facebook">
-                <Facebook size={14} />
-              </Button>
+              <FacebookLogin
+                appId={import.meta.env.VITE_FACEBOOK_APP_ID}
+                autoLoad={false}
+                callback={responseFacebook}
+                scope="public_profile,email"
+                render={(renderProps) => (
+                  <Button color="facebook" onClick={renderProps.onClick}>
+                    <Facebook size={14} />
+                  </Button>
+                )}
+              />
+
               <Button color="twitter">
                 <Twitter size={14} />
               </Button>
               <GoogleLogin
-                clientId="749116841216-khs7k2ko4ntvvsptjimhbsj5aejjo9if.apps.googleusercontent.com"
+                clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+                autoLoad={false}
                 render={(renderProps) => (
                   <Button
                     color="google"

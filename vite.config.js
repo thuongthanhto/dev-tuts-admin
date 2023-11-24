@@ -4,10 +4,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import rollupNodePolyFill from 'rollup-plugin-node-polyfills'
 import NodeGlobalsPolyfillPlugin from '@esbuild-plugins/node-globals-polyfill'
+import basicSsl from '@vitejs/plugin-basic-ssl'
 
 export default () => {
   return defineConfig({
-    plugins: [react()],
+    plugins: [react(), basicSsl()],
     define: {
       global: 'globalThis'
     },
