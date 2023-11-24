@@ -15,7 +15,7 @@ import themeConfig from '@configs/themeConfig';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
-import { Facebook, Twitter, Mail, GitHub, Coffee, X } from 'react-feather';
+import { Facebook, Twitter, GitHub, Coffee, X } from 'react-feather';
 
 // ** Actions
 import { handleLogin } from '@store/authentication';
