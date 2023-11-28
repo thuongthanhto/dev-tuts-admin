@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
-import { FaGooglePlusG } from 'react-icons/fa';
+import { FaFacebook, FaFacebookF, FaGoogle, FaGooglePlusG } from 'react-icons/fa';
 import axios from 'axios';
 
 // ** Custom Hooks
@@ -187,7 +187,11 @@ const Login = () => {
       console.log(error);
       toast.error(error?.response?.data?.message ?? error.code);
     }
-  }
+  };
+
+  const responseTwitter = (err, data) => {
+    console.log(err, data);
+  };
 
   return (
     <div className="auth-wrapper auth-cover">
@@ -297,14 +301,11 @@ const Login = () => {
                 scope="public_profile,email"
                 render={(renderProps) => (
                   <Button color="facebook" onClick={renderProps.onClick}>
-                    <Facebook size={14} />
+                    <FaFacebookF size={14} />
                   </Button>
                 )}
               />
 
-              <Button color="twitter">
-                <Twitter size={14} />
-              </Button>
               <GoogleLogin
                 clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
                 autoLoad={false}
@@ -314,7 +315,7 @@ const Login = () => {
                     onClick={renderProps.onClick}
                     disabled={renderProps.disabled}
                   >
-                    <FaGooglePlusG size={14} />
+                    <FaGoogle size={14} />
                   </Button>
                 )}
                 buttonText="Login"
@@ -322,10 +323,6 @@ const Login = () => {
                 onFailure={responseGoogle}
                 cookiePolicy={'single_host_origin'}
               />
-
-              <Button className="me-0" color="github">
-                <GitHub size={14} />
-              </Button>
             </div>
           </Col>
         </Col>
